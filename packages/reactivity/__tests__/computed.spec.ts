@@ -1,6 +1,8 @@
 import { computed, reactive, effect, stop, ref } from '../src'
 
+// reactivity/computed
 describe('reactivity/computed', () => {
+  // computedValue返回更新后的值
   it('should return updated value', () => {
     const value = reactive<{ foo?: number }>({})
     const cValue = computed(() => value.foo)
@@ -9,6 +11,10 @@ describe('reactivity/computed', () => {
     expect(cValue.value).toBe(1)
   })
 
+  // computedValue
+  // value不发生变化时，不重新计算
+  // value变化时，不重新计算
+  // value变化后，在computedValue调用时，重新计算
   it('should compute lazily', () => {
     const value = reactive<{ foo?: number }>({})
     const getter = jest.fn(() => value.foo)
@@ -37,9 +43,11 @@ describe('reactivity/computed', () => {
     expect(getter).toHaveBeenCalledTimes(2)
   })
 
+  // computedValue 可以在effect() -> dummy生效
   it('should trigger effect', () => {
     const value = reactive<{ foo?: number }>({})
     const cValue = computed(() => value.foo)
+    // dummy 仿造
     let dummy
     effect(() => {
       dummy = cValue.value
@@ -49,6 +57,7 @@ describe('reactivity/computed', () => {
     expect(dummy).toBe(1)
   })
 
+  // 链式computed是可以的
   it('should work when chained', () => {
     const value = reactive({ foo: 0 })
     const c1 = computed(() => value.foo)
@@ -60,6 +69,7 @@ describe('reactivity/computed', () => {
     expect(c1.value).toBe(1)
   })
 
+  // 链式computed 在effect中也生效
   it('should trigger effect when chained', () => {
     const value = reactive({ foo: 0 })
     const getter1 = jest.fn(() => value.foo)
@@ -83,6 +93,7 @@ describe('reactivity/computed', () => {
     expect(getter2).toHaveBeenCalledTimes(2)
   })
 
+  // 链式computed 在effect中也生效
   it('should trigger effect when chained (mixed invocations)', () => {
     const value = reactive({ foo: 0 })
     const getter1 = jest.fn(() => value.foo)
@@ -107,6 +118,7 @@ describe('reactivity/computed', () => {
     expect(getter2).toHaveBeenCalledTimes(2)
   })
 
+  // stop 可以停止computed更新
   it('should no longer update when stopped', () => {
     const value = reactive<{ foo?: number }>({})
     const cValue = computed(() => value.foo)
@@ -122,6 +134,7 @@ describe('reactivity/computed', () => {
     expect(dummy).toBe(1)
   })
 
+  // computed支持get set配置
   it('should support setter', () => {
     const n = ref(1)
     const plusOne = computed({
@@ -139,6 +152,7 @@ describe('reactivity/computed', () => {
     expect(n.value).toBe(-1)
   })
 
+  // 同样的computed支持的get set，在对应的effect中生效
   it('should trigger effect w/ setter', () => {
     const n = ref(1)
     const plusOne = computed({
