@@ -1,0 +1,39 @@
+{
+  "name": "@vue/reactivity",
+  "version": "3.0.0-alpha.1",
+  "description": "@vue/reactivity",
+  "main": "index.js",
+  // 最早出于rollup的概念
+  // npm包是基于CommonJS规范的，当require()时，会去根据main字段查找入口
+  "module": "dist/reactivity.esm-bundler.js",
+  // 官方解释
+  // https://docs.npmjs.com/cli/v6/configuring-npm/package-json#files
+  // 描述：当被installed为依赖时，这些文件将被包含。
+  "files": [
+    "index.js",
+    "dist"
+  ],
+  "types": "dist/reactivity.d.ts",
+  // 开启unpkg的cnd服务
+  "unpkg": "dist/reactivity.global.js",
+  // 声明webpack副作用
+  // false: 可进行最大优化
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vuejs/vue.git"
+  },
+  "buildOptions": {
+    "name": "VueObserver",
+    "formats": ["esm", "cjs", "global", "esm-browser"]
+  },
+  "keywords": [
+    "vue"
+  ],
+  "author": "Evan You",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vuejs/vue/issues"
+  },
+  "homepage": "https://github.com/vuejs/vue/tree/dev/packages/reactivity#readme"
+}
