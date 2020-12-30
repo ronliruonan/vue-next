@@ -1,7 +1,9 @@
 import { ref, effect, reactive, isRef, toRefs } from '../src/index'
 import { computed } from '@vue/runtime-dom'
 
+// reactivity/ref
 describe('reactivity/ref', () => {
+  // ref()返回正确的值
   it('should hold a value', () => {
     const a = ref(1)
     expect(a.value).toBe(1)
@@ -9,6 +11,7 @@ describe('reactivity/ref', () => {
     expect(a.value).toBe(2)
   })
 
+  // ref() 应该是reactived??
   it('should be reactive', () => {
     const a = ref(1)
     let dummy
@@ -20,6 +23,7 @@ describe('reactivity/ref', () => {
     expect(dummy).toBe(2)
   })
 
+  // ref() 对嵌套的属性也生效
   it('should make nested properties reactive', () => {
     const a = ref({
       count: 1
@@ -33,6 +37,7 @@ describe('reactivity/ref', () => {
     expect(dummy).toBe(2)
   })
 
+  // ref() 对嵌套的reactived也好使
   it('should work like a normal property when nested in a reactive object', () => {
     const a = ref(1)
     const obj = reactive({
@@ -63,6 +68,7 @@ describe('reactivity/ref', () => {
     expect(dummy3).toBe(3)
   })
 
+  // typeof 运算正常
   it('should unwrap nested values in types', () => {
     const a = {
       b: ref(0)
@@ -73,6 +79,7 @@ describe('reactivity/ref', () => {
     expect(typeof (c.value.b + 1)).toBe('number')
   })
 
+  // ref() computed() 应该具备isRef
   test('isRef', () => {
     expect(isRef(ref(1))).toBe(true)
     expect(isRef(computed(() => 1))).toBe(true)
@@ -83,6 +90,7 @@ describe('reactivity/ref', () => {
     expect(isRef({ value: 0 })).toBe(false)
   })
 
+  // toRefs() 感化reactived对象
   test('toRefs', () => {
     const a = reactive({
       x: 1,
