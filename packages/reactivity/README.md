@@ -2,17 +2,13 @@
 
 ## Usage Note
 
-> This package is inlined into Global & Browser ESM builds of user-facing renderers (e.g. `@vue/runtime-dom`),    
->> 这个包内联到面向用户的渲染器 (譬如 `@vue/runtime-dom`)的Global & Browser ESM构建中，    
+> This package is inlined into Global & Browser ESM builds of user-facing renderers (e.g. `@vue/runtime-dom`),but also published as a package that can be used standalone.    
+>> 这个包内联到面向用户的渲染器 (譬如 `@vue/runtime-dom`)的Global & Browser ESM构建中，但也会发布为一个可以单独使用的包。
 
-> but also published as a package that can be used standalone.    
->> 但也会发布为一个可以单独使用的包。    
 
-> The standalone build should not be used alongside a pre-bundled build of a user-facing renderer,    
->> 这个独立版本不应该用于面向用户渲染器的预捆绑版本，    
+> The standalone build should not be used alongside a pre-bundled build of a user-facing renderer, as they will have different internal storage for reactivity connections.    
+>> 这个独立版本不应该用于面向用户渲染器的预捆绑版本，因为they用于reactivity连接的不同内部存储。    
 
-> as they will have different internal storage for reactivity connections.    
->> 因为they用于reactivity连接的不同内部存储。    
 
 > A user-facing renderer should re-export all APIs from this package.      
 >> 面向用户渲染器的话，应该重新导出这个包的所有api。
