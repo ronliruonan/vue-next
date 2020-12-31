@@ -1,7 +1,9 @@
 import { reactive, effect, toRaw, isReactive } from '../../src'
 
+// reactivity/collections/WeakMap
 describe('reactivity/collections', () => {
   describe('WeakMap', () => {
+    // instanceof 有效
     test('instanceof', () => {
       const original = new WeakMap()
       const observed = reactive(original)
@@ -10,6 +12,8 @@ describe('reactivity/collections', () => {
       expect(observed instanceof WeakMap).toBe(true)
     })
 
+    // 应observe 操作
+    // WeakMap.set(), WeakMap.delete()
     it('should observe mutations', () => {
       let dummy
       const key = {}
@@ -27,6 +31,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(undefined)
     })
 
+    // 不应observe 自定义属性
     it('should not observe custom property mutations', () => {
       let dummy
       const map: any = reactive(new WeakMap())
@@ -37,6 +42,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(undefined)
     })
 
+    // 不应observe 无效值的effect
     it('should not observe non value changing mutations', () => {
       let dummy
       const key = {}
@@ -60,6 +66,7 @@ describe('reactivity/collections', () => {
       expect(mapSpy).toHaveBeenCalledTimes(3)
     })
 
+    // 不应observe raw data
     it('should not observe raw data', () => {
       let dummy
       const key = {}
@@ -73,6 +80,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(undefined)
     })
 
+    // proxy不应污染 original Map
     it('should not pollute original Map with Proxies', () => {
       const map = new WeakMap()
       const observed = reactive(map)
@@ -83,6 +91,7 @@ describe('reactivity/collections', () => {
       expect(map.get(key)).toBe(toRaw(value))
     })
 
+    // 应return items的observable
     it('should return observable versions of contained values', () => {
       const observed = reactive(new WeakMap())
       const key = {}
@@ -93,6 +102,7 @@ describe('reactivity/collections', () => {
       expect(toRaw(wrapped)).toBe(value)
     })
 
+    // 应observe nested data
     it('should observed nested data', () => {
       const observed = reactive(new WeakMap())
       const key = {}
