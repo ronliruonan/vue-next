@@ -1,7 +1,10 @@
 import { reactive, effect, isReactive, toRaw } from '../../src'
 
+// reactivity/collections/Set
 describe('reactivity/collections', () => {
   describe('Set', () => {
+    // 测试instanceof
+    // reactive instanceof Set === true
     it('instanceof', () => {
       const original = new Set()
       const observed = reactive(original)
@@ -10,6 +13,8 @@ describe('reactivity/collections', () => {
       expect(observed instanceof Set).toBe(true)
     })
 
+    // 应该observe 操作
+    // Set.add Set.delete
     it('should observe mutations', () => {
       let dummy
       const set = reactive(new Set())
@@ -22,6 +27,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(false)
     })
 
+    // 应该observe for of 迭代
     it('should observe for of iteration', () => {
       let dummy
       const set = reactive(new Set() as Set<number>)
@@ -42,6 +48,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(0)
     })
 
+    // 应该observe forEach迭代
     it('should observe forEach iteration', () => {
       let dummy: any
       const set = reactive(new Set())
@@ -60,6 +67,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(0)
     })
 
+    // 应该observe Set.values()迭代
     it('should observe values iteration', () => {
       let dummy
       const set = reactive(new Set() as Set<number>)
@@ -80,6 +88,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(0)
     })
 
+    // 应该observe Set.keys() 迭代
     it('should observe keys iteration', () => {
       let dummy
       const set = reactive(new Set() as Set<number>)
@@ -100,6 +109,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(0)
     })
 
+    // 应该observe Set.entries 迭代
     it('should observe entries iteration', () => {
       let dummy
       const set = reactive(new Set<number>())
@@ -122,6 +132,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(0)
     })
 
+    // 应该observe Set.clear()触发
     it('should be triggered by clearing', () => {
       let dummy
       const set = reactive(new Set())
@@ -134,6 +145,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(false)
     })
 
+    // 不应observe Set对象自定义的属性
     it('should not observe custom property mutations', () => {
       let dummy
       const set: any = reactive(new Set())
@@ -144,6 +156,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(undefined)
     })
 
+    // 应该observe Set.clear()
     it('should observe size mutations', () => {
       let dummy
       const set = reactive(new Set())
@@ -159,6 +172,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(0)
     })
 
+    // 不应observe 无效值的操作
     it('should not observe non value changing mutations', () => {
       let dummy
       const set = reactive(new Set())
@@ -184,6 +198,7 @@ describe('reactivity/collections', () => {
       expect(setSpy).toHaveBeenCalledTimes(3)
     })
 
+    // 不应observe original data
     it('should not observe raw data', () => {
       let dummy
       const set = reactive(new Set())
@@ -194,6 +209,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(false)
     })
 
+    // 不应observe original 迭代
     it('should not observe raw iterations', () => {
       let dummy = 0
       const set = reactive(new Set<number>())
@@ -224,6 +240,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(0)
     })
 
+    // 不应observe original的操作
     it('should not be triggered by raw mutations', () => {
       let dummy
       const set = reactive(new Set())
@@ -239,6 +256,8 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(true)
     })
 
+    // 不应observe original的size操作
+    // originalSet.size 不应该effect
     it('should not observe raw size mutations', () => {
       let dummy
       const set = reactive(new Set())
@@ -249,6 +268,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(0)
     })
 
+    // 不应effect originalSet.size 操作
     it('should not be triggered by raw size mutations', () => {
       let dummy
       const set = reactive(new Set())
@@ -259,6 +279,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(0)
     })
 
+    // 应支持？？？？？？
     it('should support objects as key', () => {
       let dummy
       const key = {}
@@ -278,6 +299,7 @@ describe('reactivity/collections', () => {
       expect(setSpy).toHaveBeenCalledTimes(2)
     })
 
+    // 代理 不应污染 original Set
     it('should not pollute original Set with Proxies', () => {
       const set = new Set()
       const observed = reactive(set)
@@ -287,6 +309,7 @@ describe('reactivity/collections', () => {
       expect(set.has(value)).toBe(false)
     })
 
+    /// 应observe forEach的嵌套值
     it('should observe nested values in iterations (forEach)', () => {
       const set = reactive(new Set([{ foo: 1 }]))
       let dummy: any
@@ -304,6 +327,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(2)
     })
 
+    // 应observe 嵌套值 在Set.values()迭代
     it('should observe nested values in iterations (values)', () => {
       const set = reactive(new Set([{ foo: 1 }]))
       let dummy: any
@@ -321,6 +345,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(2)
     })
 
+    // 应observe nested values 在Set.entries()的iteration中
     it('should observe nested values in iterations (entries)', () => {
       const set = reactive(new Set([{ foo: 1 }]))
       let dummy: any
@@ -339,6 +364,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(2)
     })
 
+    // 应observe nested值 在for of的iteration中
     it('should observe nested values in iterations (for...of)', () => {
       const set = reactive(new Set([{ foo: 1 }]))
       let dummy: any
