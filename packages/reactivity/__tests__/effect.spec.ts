@@ -9,6 +9,7 @@ import {
 } from '../src/index'
 import { ITERATE_KEY } from '../src/effect'
 
+// reactivity/effect
 describe('reactivity/effect', () => {
   it('should run the passed function once (wrapped by a effect)', () => {
     const fnSpy = jest.fn(() => {})
@@ -16,6 +17,8 @@ describe('reactivity/effect', () => {
     expect(fnSpy).toHaveBeenCalledTimes(1)
   })
 
+  // 应该observe 基本属性
+  // effect dummy = val1
   it('should observe basic properties', () => {
     let dummy
     const counter = reactive({ num: 0 })
@@ -26,6 +29,8 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(7)
   })
 
+  // 应该observe多个属性
+  // effect dummy = val1 + val2 + val3
   it('should observe multiple properties', () => {
     let dummy
     const counter = reactive({ num1: 0, num2: 0 })
@@ -36,6 +41,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(21)
   })
 
+  // 能处理多个effect
   it('should handle multiple effects', () => {
     let dummy1, dummy2
     const counter = reactive({ num: 0 })
@@ -49,6 +55,7 @@ describe('reactivity/effect', () => {
     expect(dummy2).toBe(1)
   })
 
+  // 能observe嵌套属性
   it('should observe nested properties', () => {
     let dummy
     const counter = reactive({ nested: { num: 0 } })
@@ -59,6 +66,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(8)
   })
 
+  // 能observe delete操作
   it('should observe delete operations', () => {
     let dummy
     const obj = reactive({ prop: 'value' })
@@ -69,6 +77,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(undefined)
   })
 
+  // 能observe has操作
   it('should observe has operations', () => {
     let dummy
     const obj = reactive<{ prop: string | number }>({ prop: 'value' })
@@ -81,6 +90,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(true)
   })
 
+  // 能observe 原型链中的属性
   it('should observe properties on the prototype chain', () => {
     let dummy
     const counter = reactive({ num: 0 })
@@ -97,6 +107,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(3)
   })
 
+  // 能observe has操作在原型链中
   it('should observe has operations on the prototype chain', () => {
     let dummy
     const counter = reactive({ num: 0 })
@@ -113,6 +124,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(true)
   })
 
+  // 能observe 继承属性的getter setter
   it('should observe inherited property accessors', () => {
     let dummy, parentDummy, hiddenValue: any
     const obj = reactive<{ prop?: number }>({})
@@ -139,6 +151,7 @@ describe('reactivity/effect', () => {
     expect(parentDummy).toBe(2)
   })
 
+  // 能observe function调用
   it('should observe function call chains', () => {
     let dummy
     const counter = reactive({ num: 0 })
@@ -153,6 +166,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(2)
   })
 
+  // 能observe 迭代
   it('should observe iteration', () => {
     let dummy
     const list = reactive(['Hello'])
@@ -165,6 +179,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe('World!')
   })
 
+  // 能observe 隐士的Array.length 变化
   it('should observe implicit array length changes', () => {
     let dummy
     const list = reactive(['Hello'])
@@ -177,6 +192,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe('Hello World!  Hello!')
   })
 
+  // 能observe pop/index操作？
   it('should observe sparse array mutations', () => {
     let dummy
     const list = reactive<string[]>([])
@@ -190,6 +206,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe('Hello')
   })
 
+  // 能obser enum操作
   it('should observe enumeration', () => {
     let dummy = 0
     const numbers = reactive<Record<string, number>>({ num1: 3 })
@@ -207,6 +224,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(4)
   })
 
+  // 能 observe symbol键名
   it('should observe symbol keyed properties', () => {
     const key = Symbol('symbol keyed prop')
     let dummy, hasDummy
@@ -223,6 +241,7 @@ describe('reactivity/effect', () => {
     expect(hasDummy).toBe(false)
   })
 
+  // 不应观察知名符号键属性
   it('should not observe well-known symbol keyed properties', () => {
     const key = Symbol.isConcatSpreadable
     let dummy
@@ -236,6 +255,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(undefined)
   })
 
+  // 应该observe 函数作为属性值
   it('should observe function valued properties', () => {
     const oldFunc = () => {}
     const newFunc = () => {}
@@ -249,6 +269,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(newFunc)
   })
 
+  // 当value没发生变化时，不应该发生effect响应
   it('should not observe set operations without a value change', () => {
     let hasDummy, getDummy
     const obj = reactive({ prop: 'value' })
@@ -267,6 +288,7 @@ describe('reactivity/effect', () => {
     expect(hasDummy).toBe(true)
   })
 
+  // 不应该observe origin的变化，可以observe reactive后的
   it('should not observe raw mutations', () => {
     let dummy
     const obj = reactive<{ prop?: string }>({})
@@ -277,6 +299,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(undefined)
   })
 
+  // toRaw还原的原料，不应该observe 原料的变化，同上
   it('should not be triggered by raw mutations', () => {
     let dummy
     const obj = reactive<{ prop?: string }>({})
@@ -287,6 +310,8 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(undefined)
   })
 
+  // 不应该obsere 原料继承的setter
+  // reactive(getter, setter)
   it('should not be triggered by inherited raw setters', () => {
     let dummy, parentDummy, hiddenValue: any
     const obj = reactive<{ prop?: number }>({})
@@ -309,6 +334,8 @@ describe('reactivity/effect', () => {
     expect(parentDummy).toBe(undefined)
   })
 
+  // ??应避免自身无限循环
+  // effect时已经调用一遍了？ 不应该呀，这样设计的话太蛋疼了，effect一下就立马执行？跟newPromise一样？
   it('should avoid implicit infinite recursive loops with itself', () => {
     const counter = reactive({ num: 0 })
 
@@ -321,6 +348,7 @@ describe('reactivity/effect', () => {
     expect(counterSpy).toHaveBeenCalledTimes(2)
   })
 
+  // 应该允许显示地柜循环
   it('should allow explicitly recursive raw function loops', () => {
     const counter = reactive({ num: 0 })
     const numSpy = jest.fn(() => {
@@ -334,6 +362,7 @@ describe('reactivity/effect', () => {
     expect(numSpy).toHaveBeenCalledTimes(10)
   })
 
+  // 应避免无限循环与其他影响
   it('should avoid infinite loops with other effects', () => {
     const nums = reactive({ num1: 0, num2: 1 })
 
@@ -357,6 +386,7 @@ describe('reactivity/effect', () => {
     expect(spy2).toHaveBeenCalledTimes(3)
   })
 
+  // 两个effect 应该是2个不同的指针
   it('should return a new reactive version of the function', () => {
     function greet() {
       return 'Hello World'
@@ -369,6 +399,8 @@ describe('reactivity/effect', () => {
     expect(effect1).not.toBe(effect2)
   })
 
+  // 自动运行时，应发现新分支
+  // ?????? 没太搞懂这个case要表达的意思
   it('should discover new branches while running automatically', () => {
     let dummy
     const obj = reactive({ prop: 'value', run: false })
@@ -391,6 +423,8 @@ describe('reactivity/effect', () => {
     expect(conditionalSpy).toHaveBeenCalledTimes(3)
   })
 
+  // 手动运行时，应该发现新分支
+  // ???? 啥
   it('should discover new branches when running manually', () => {
     let dummy
     let run = false
@@ -409,6 +443,9 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe('World')
   })
 
+  // 不应该是由变异引发属性，用于在非活动分支
+  // ?????
+  // 当执行结果没有变化时，不应该触发effect
   it('should not be triggered by mutating a property, which is used in an inactive branch', () => {
     let dummy
     const obj = reactive({ prop: 'value', run: true })
@@ -428,6 +465,7 @@ describe('reactivity/effect', () => {
     expect(conditionalSpy).toHaveBeenCalledTimes(2)
   })
 
+  // ？？ 啥这是
   it('should not double wrap if the passed function is a effect', () => {
     const runner = effect(() => {})
     const otherRunner = effect(runner)
@@ -435,6 +473,8 @@ describe('reactivity/effect', () => {
     expect(runner.raw).toBe(otherRunner.raw)
   })
 
+  // 单一修改  不应该触发多次
+  // ????
   it('should not run multiple times for a single mutation', () => {
     let dummy
     const obj = reactive<Record<string, number>>({})
@@ -452,6 +492,7 @@ describe('reactivity/effect', () => {
     expect(fnSpy).toHaveBeenCalledTimes(2)
   })
 
+  // 应该允许嵌套effect
   it('should allow nested effects', () => {
     const nums = reactive({ num1: 0, num2: 1, num3: 2 })
     const dummy: any = {}
@@ -485,6 +526,7 @@ describe('reactivity/effect', () => {
     expect(childSpy).toHaveBeenCalledTimes(5)
   })
 
+  // 应该观察 class方法的调用
   it('should observe class method invocations', () => {
     class Model {
       count: number
@@ -505,6 +547,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(1)
   })
 
+  // 没看懂？？????????
   it('scheduler', () => {
     let runner: any, dummy
     const scheduler = jest.fn(_runner => {
@@ -530,6 +573,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(2)
   })
 
+  // 没看懂？？????????
   it('events: onTrack', () => {
     let events: DebuggerEvent[] = []
     let dummy
@@ -569,6 +613,7 @@ describe('reactivity/effect', () => {
     ])
   })
 
+  // 没看懂？？????????
   it('events: onTrigger', () => {
     let events: DebuggerEvent[] = []
     let dummy
@@ -607,6 +652,7 @@ describe('reactivity/effect', () => {
     })
   })
 
+  // 没看懂？？????????
   it('stop', () => {
     let dummy
     const obj = reactive({ prop: 1 })
@@ -624,6 +670,7 @@ describe('reactivity/effect', () => {
     expect(dummy).toBe(3)
   })
 
+  // 没看懂？？????????
   it('events: onStop', () => {
     const runner = effect(() => {}, {
       onStop: jest.fn()
@@ -633,6 +680,7 @@ describe('reactivity/effect', () => {
     expect(runner.onStop).toHaveBeenCalled()
   })
 
+  //  标记 不被reactive
   it('markNonReactive', () => {
     const obj = reactive({
       foo: markNonReactive({
