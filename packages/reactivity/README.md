@@ -28,4 +28,59 @@
 ## Caveats / 注意事项
 
 - Built-in objects are not observed except for `Map`, `WeakMap`, `Set` and `WeakSet`.   
-内置对象中，对`Map`, `WeakMap`, `Set` and `WeakSet`不生效
+内置对象不能observe，除了`Map`, `WeakMap`, `Set` and `WeakSet`。
+
+- *与最新版比较：最新版支持了`Array`*
+
+
+> *MDN中标准* 的内置对象分类
+>> 值属性：    
+ `Inifinity`, `NaN`, `undefined`, `globalThis`       
+ : 返回一个简单值，没有自己的属性、方法         
+
+>> 函数属性:      
+ `eval()`, `uneval()`, `isFinite()`, `isNaN()`, `parseFloat()`, `parseInt()`, `decodeURI()`, `decodeURIComponent()`, `encodeURI()`, `encodeURIComponent()`      
+ : 全局函数，可直接调用，不用指定所属对象      
+
+>> 基本对象：     
+ `Object`, `Function`, `Boolean`, `Symbol`        
+ : 顾名思义，基本对象是定义或者用其他对象的基础）     
+
+>> 错误对象：    
+ `Error`, `AggregateError`, `EvalError`, `InternalError`, `RangeError`, `ReferenceError`, `SyntaxError`, `TypeError`, `URIError`    
+ ：一种特殊的基本对象
+
+>> 数字和日期对象    
+ `Number`, `BigInt`, `Math`, `Date`    
+ ：用来表示数字、日期和执行数学计算的对象。    
+
+>> 字符串        
+ `String`, `RegExp`    
+ : 用来表示和操作字符串的对象    
+
+>> 可索引的集合对象
+ `Array`, `Int8Array`, `Uint8Array`, `Uint8ClampedArray`, `Int16Array`, `Uint16Array`, `Int32Array`, `Uint32Array`, `Float32Array`, `Float64Array`, `BigInt64Array`, `BigUint64Array`    
+ : 这些对象表示按照索引值来排序的数据集合，包括数组和类型数组，以及类数组结构的对象     
+
+>> 使用键的集合对象    
+ `Map`, `Set`, `WeakMap`, `WeakSet`     
+ : 这些集合对象在存储数据时会使用到键，包括可迭代的Map 和 Set，支持按照插入顺序来迭代元素。    
+
+>> 结构化数据    
+ `ArrayBuffer`, `SharedArrayBuffer`, `Atomics`, `DataView`, `JSON`    
+ : 这些对象用来表示和操作结构化的缓冲区数据，或使用 JSON （JavaScript Object Notation）编码的数据。    
+
+>> 控制抽象对象    
+ `Promise`, `Generator`, `GeneratorFunction`, `AsyncFunction`    
+ : 控件抽象可以帮助构造代码，尤其是异步代码（例如，不使用深度嵌套的回调）。    
+
+ >> 反射    
+ `Reflect`, `Proxy`    
+
+>> 国际化    
+ `Intl`, `Intl.Collator`, `Intl.DateTimeFormat`, `Intl.ListFormat`, `Intl.NumberFormat`, `Intl.PluralRules`, `Intl.RelativeTimeFormat`, `Intl.Locale`    
+ : ECMAScript核心的附加功能，用于支持多语言处理。    
+
+>> WebAssembly
+ `WebAssembly`, `WebAssembly.Module`, `WebAssembly.Instance`, `WebAssembly.Memory`, `WebAssembly.Table`, `WebAssembly.CompileError`, `WebAssembly.LinkError`, `WebAssembly.RuntimeError`    
+ 

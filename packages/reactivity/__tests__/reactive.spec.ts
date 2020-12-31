@@ -182,6 +182,7 @@ describe('reactivity/reactive', () => {
     assertValue(s)
 
     // built-ins should work and return same value
+    // 内置对象们
     const p = Promise.resolve()
     expect(reactive(p)).toBe(p)
     const r = new RegExp('')
