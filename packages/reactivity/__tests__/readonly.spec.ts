@@ -18,10 +18,13 @@ import { mockWarn } from '@vue/runtime-test'
  */
 type Writable<T> = { -readonly [P in keyof T]: T[P] }
 
+// reactivity/readonly
 describe('reactivity/readonly', () => {
   mockWarn()
 
+  // readonly-Object
   describe('Object', () => {
+    // readonly对嵌套对象生效
     it('should make nested values readonly', () => {
       const original = { foo: 1, bar: { baz: 2 } }
       const observed = readonly(original)
@@ -42,6 +45,7 @@ describe('reactivity/readonly', () => {
       expect(Object.keys(observed)).toEqual(['foo', 'bar'])
     })
 
+    // readonly的任何写操作都无效
     it('should not allow mutation', () => {
       const qux = Symbol('qux')
       const original = {
@@ -90,6 +94,7 @@ describe('reactivity/readonly', () => {
       ).toHaveBeenWarnedLast()
     })
 
+    // 通过un/locked 控制readonly
     it('should allow mutation when unlocked', () => {
       const observed: any = readonly({ foo: 1, bar: { baz: 2 } })
       unlock()
@@ -105,6 +110,7 @@ describe('reactivity/readonly', () => {
       expect(`target is readonly`).not.toHaveBeenWarned()
     })
 
+    // locked状态时，代理赋值操作不会触发effect
     it('should not trigger effects when locked', () => {
       const observed: any = readonly({ a: 1 })
       let dummy
@@ -118,6 +124,7 @@ describe('reactivity/readonly', () => {
       expect(`target is readonly`).toHaveBeenWarned()
     })
 
+    // unlocked状态时，代理赋值操作 要触发effect
     it('should trigger effects when unlocked', () => {
       const observed: any = readonly({ a: 1 })
       let dummy
@@ -133,7 +140,9 @@ describe('reactivity/readonly', () => {
     })
   })
 
+  // readonly-Array
   describe('Array', () => {
+    // readonly对数组嵌套有效
     it('should make nested values readonly', () => {
       const original = [{ foo: 1 }]
       const observed = readonly(original)
@@ -154,6 +163,7 @@ describe('reactivity/readonly', () => {
       expect(Object.keys(observed)).toEqual(['0'])
     })
 
+    // readonly状态的数组 不可写操作
     it('should not allow mutation', () => {
       const observed: any = readonly([{ foo: 1 }])
       observed[0] = 1
@@ -182,6 +192,7 @@ describe('reactivity/readonly', () => {
       expect(`target is readonly.`).toHaveBeenWarnedTimes(5)
     })
 
+    // unlocked后可以有写操作
     it('should allow mutation when unlocked', () => {
       const observed: any = readonly([{ foo: 1, bar: { baz: 2 } }])
       unlock()
@@ -198,6 +209,7 @@ describe('reactivity/readonly', () => {
       expect(`target is readonly`).not.toHaveBeenWarned()
     })
 
+    // locked readonly下，effects不应响应变化值
     it('should not trigger effects when locked', () => {
       const observed: any = readonly([{ a: 1 }])
       let dummy
@@ -215,6 +227,7 @@ describe('reactivity/readonly', () => {
       expect(`target is readonly`).toHaveBeenWarnedTimes(2)
     })
 
+    // unlocked readonly下，effects应响应变化值
     it('should trigger effects when unlocked', () => {
       const observed: any = readonly([{ a: 1 }])
       let dummy
@@ -243,6 +256,7 @@ describe('reactivity/readonly', () => {
   const maps = [Map, WeakMap]
   maps.forEach((Collection: any) => {
     describe(Collection.name, () => {
+      // readonly 嵌套对象
       test('should make nested values readonly', () => {
         const key1 = {}
         const key2 = {}
@@ -259,6 +273,7 @@ describe('reactivity/readonly', () => {
         expect(isReadonly(original.get(key1))).toBe(false)
       })
 
+      // readonly 不可写操作 不触发effect
       test('should not allow mutation & not trigger effect', () => {
         const map = readonly(new Collection())
         const key = {}
@@ -275,6 +290,7 @@ describe('reactivity/readonly', () => {
         ).toHaveBeenWarned()
       })
 
+      // unlocked readonly 可用写入 可effect触发
       test('should allow mutation & trigger effect when unlocked', () => {
         const map = readonly(new Collection())
         const isWeak = Collection === WeakMap
@@ -292,6 +308,7 @@ describe('reactivity/readonly', () => {
         expect(`target is readonly`).not.toHaveBeenWarned()
       })
 
+      // 在iteration迭代操作时，应该也是readonly
       if (Collection === Map) {
         test('should retrieve readonly values on iteration', () => {
           const key1 = {}
@@ -316,6 +333,7 @@ describe('reactivity/readonly', () => {
   const sets = [Set, WeakSet]
   sets.forEach((Collection: any) => {
     describe(Collection.name, () => {
+      // readonly 嵌套值
       test('should make nested values readonly', () => {
         const key1 = {}
         const key2 = {}
@@ -330,6 +348,7 @@ describe('reactivity/readonly', () => {
         expect(original.has(reactive(key1))).toBe(false)
       })
 
+      // readonly 时，不允许：写和触发effect
       test('should not allow mutation & not trigger effect', () => {
         const set = readonly(new Collection())
         const key = {}
@@ -346,6 +365,7 @@ describe('reactivity/readonly', () => {
         ).toHaveBeenWarned()
       })
 
+      // unlocked readonly 时，允许写和触发effect
       test('should allow mutation & trigger effect when unlocked', () => {
         const set = readonly(new Collection())
         const key = {}
@@ -384,6 +404,8 @@ describe('reactivity/readonly', () => {
     })
   })
 
+  // reactive 一个readonly 应该得到readonly
+  // 且toRaw是同一个original
   test('calling reactive on an readonly should return readonly', () => {
     const a = readonly({})
     const b = reactive(a)
@@ -392,6 +414,8 @@ describe('reactivity/readonly', () => {
     expect(toRaw(a)).toBe(toRaw(b))
   })
 
+  // readonly 一个reactive 应该得到readonly
+  // 且toRaw是同一个original
   test('calling readonly on a reactive object should return readonly', () => {
     const a = reactive({})
     const b = readonly(a)
@@ -400,6 +424,7 @@ describe('reactivity/readonly', () => {
     expect(toRaw(a)).toBe(toRaw(b))
   })
 
+  // readonly observe 一个已经是readonly observed，应该返回同一个代理
   test('observing already observed value should return same Proxy', () => {
     const original = { foo: 1 }
     const observed = readonly(original)
@@ -407,6 +432,7 @@ describe('reactivity/readonly', () => {
     expect(observed2).toBe(observed)
   })
 
+  // 多次readonly observe同一个original，应返回同一个代理
   test('observing the same value multiple times should return same Proxy', () => {
     const original = { foo: 1 }
     const observed = readonly(original)
@@ -414,6 +440,7 @@ describe('reactivity/readonly', () => {
     expect(observed2).toBe(observed)
   })
 
+  // markNonReactive  生效于 readonly() 中
   test('markNonReactive', () => {
     const obj = readonly({
       foo: { a: 1 },
@@ -423,6 +450,7 @@ describe('reactivity/readonly', () => {
     expect(isReactive(obj.bar)).toBe(false)
   })
 
+  // markReadonly 生效与reactive() 中
   test('markReadonly', () => {
     const obj = reactive({
       foo: { a: 1 },
@@ -434,6 +462,7 @@ describe('reactivity/readonly', () => {
     expect(isReadonly(obj.bar)).toBe(true)
   })
 
+  // readonly 生效于ref对象
   test('should make ref readonly', () => {
     const n: any = readonly(ref(1))
     n.value = 2
