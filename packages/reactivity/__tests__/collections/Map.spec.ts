@@ -1,7 +1,10 @@
 import { reactive, effect, toRaw, isReactive } from '../../src'
 
+// reactivity/collections/map
 describe('reactivity/collections', () => {
   describe('Map', () => {
+    // 测试instanceof
+    // reactive instanceof Map === true
     test('instanceof', () => {
       const original = new Map()
       const observed = reactive(original)
@@ -10,6 +13,8 @@ describe('reactivity/collections', () => {
       expect(observed instanceof Map).toBe(true)
     })
 
+    // 应该observe 操作
+    // Map.set Map.delete
     it('should observe mutations', () => {
       let dummy
       const map = reactive(new Map())
@@ -26,6 +31,8 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(undefined)
     })
 
+    // 应该observe size操作
+    // Map.clear
     it('should observe size mutations', () => {
       let dummy
       const map = reactive(new Map())
@@ -41,6 +48,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(0)
     })
 
+    // 应该observe for of的迭代
     it('should observe for of iteration', () => {
       let dummy
       const map = reactive(new Map())
@@ -64,6 +72,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(0)
     })
 
+    // 应该observe forEach迭代
     it('should observe forEach iteration', () => {
       let dummy: any
       const map = reactive(new Map())
@@ -83,6 +92,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(0)
     })
 
+    // 应该observe map.keys迭代
     it('should observe keys iteration', () => {
       let dummy
       const map = reactive(new Map())
@@ -104,6 +114,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(0)
     })
 
+    // 应该observe map.values迭代
     it('should observe values iteration', () => {
       let dummy
       const map = reactive(new Map())
@@ -125,6 +136,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(0)
     })
 
+    // 应该observe map.entires迭代
     it('should observe entries iteration', () => {
       let dummy
       const map = reactive(new Map())
@@ -148,6 +160,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(0)
     })
 
+    // 应该触发在Map.clear时
     it('should be triggered by clearing', () => {
       let dummy
       const map = reactive(new Map())
@@ -160,6 +173,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(undefined)
     })
 
+    // 不应该observe 给Map的自定义属性操作
     it('should not observe custom property mutations', () => {
       let dummy
       const map: any = reactive(new Map())
@@ -170,6 +184,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(undefined)
     })
 
+    // 不应该observe 无效值的变化
     it('should not observe non value changing mutations', () => {
       let dummy
       const map = reactive(new Map())
@@ -195,6 +210,7 @@ describe('reactivity/collections', () => {
       expect(mapSpy).toHaveBeenCalledTimes(3)
     })
 
+    // 不应该observe toRaw的original
     it('should not observe raw data', () => {
       let dummy
       const map = reactive(new Map())
@@ -207,6 +223,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(undefined)
     })
 
+    // 不应该污染 original map
     it('should not pollute original Map with Proxies', () => {
       const map = new Map()
       const observed = reactive(map)
@@ -216,6 +233,7 @@ describe('reactivity/collections', () => {
       expect(map.get('key')).toBe(toRaw(value))
     })
 
+    // observed Map的item 应该也是reactived
     it('should return observable versions of contained values', () => {
       const observed = reactive(new Map())
       const value = {}
@@ -225,6 +243,7 @@ describe('reactivity/collections', () => {
       expect(toRaw(wrapped)).toBe(value)
     })
 
+    // 应该observe 嵌套数据
     it('should observed nested data', () => {
       const observed = reactive(new Map())
       observed.set('key', { a: 1 })
@@ -236,6 +255,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(2)
     })
 
+    // map.forEach迭代时，应该observe 嵌套值
     it('should observe nested values in iterations (forEach)', () => {
       const map = reactive(new Map([[1, { foo: 1 }]]))
       let dummy: any
@@ -251,6 +271,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(2)
     })
 
+    // map.values 迭代，应该observed 嵌套值
     it('should observe nested values in iterations (values)', () => {
       const map = reactive(new Map([[1, { foo: 1 }]]))
       let dummy: any
@@ -266,6 +287,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(2)
     })
 
+    // map.entries 迭代，应该observed 嵌套值
     it('should observe nested values in iterations (entries)', () => {
       const key = {}
       const map = reactive(new Map([[key, { foo: 1 }]]))
@@ -284,6 +306,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(2)
     })
 
+    // for of 迭代，应该observed 嵌套值
     it('should observe nested values in iterations (for...of)', () => {
       const key = {}
       const map = reactive(new Map([[key, { foo: 1 }]]))
