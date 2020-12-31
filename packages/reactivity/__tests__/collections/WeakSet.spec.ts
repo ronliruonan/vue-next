@@ -1,7 +1,9 @@
 import { reactive, isReactive, effect, toRaw } from '../../src'
 
+// reactivity/collections/WeakSet
 describe('reactivity/collections', () => {
   describe('WeakSet', () => {
+    // reactivedWeakSet instanceof WeakSet
     it('instanceof', () => {
       const original = new WeakSet()
       const observed = reactive(original)
@@ -10,6 +12,8 @@ describe('reactivity/collections', () => {
       expect(observed instanceof WeakSet).toBe(true)
     })
 
+    // 应observe 操作
+    // WeakSet.add/delete()
     it('should observe mutations', () => {
       let dummy
       const value = {}
@@ -23,6 +27,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(false)
     })
 
+    // 不应observe 自定义属性
     it('should not observe custom property mutations', () => {
       let dummy
       const set: any = reactive(new WeakSet())
@@ -33,6 +38,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(undefined)
     })
 
+    // 不应observe 无效值的操作
     it('should not observe non value changing mutations', () => {
       let dummy
       const value = {}
@@ -56,6 +62,7 @@ describe('reactivity/collections', () => {
       expect(setSpy).toHaveBeenCalledTimes(3)
     })
 
+    // 不应observe raw data
     it('should not observe raw data', () => {
       const value = {}
       let dummy
@@ -67,6 +74,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(false)
     })
 
+    // 不应因raw 操作而触发effect
     it('should not be triggered by raw mutations', () => {
       const value = {}
       let dummy
@@ -78,6 +86,7 @@ describe('reactivity/collections', () => {
       expect(dummy).toBe(false)
     })
 
+    // proxy不应污染original
     it('should not pollute original Set with Proxies', () => {
       const set = new WeakSet()
       const observed = reactive(set)
