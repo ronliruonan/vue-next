@@ -5,6 +5,11 @@ import { reactive } from './reactive'
 
 export const refSymbol = Symbol(__DEV__ ? 'refSymbol' : undefined)
 
+/**
+ * ref 是一个对象。
+ * 就像ref.value这种用法，
+ * value是一个为包裹的嵌套Ref
+ */
 export interface Ref<T> {
   [refSymbol]: true
   value: UnwrapNestedRefs<T>
@@ -12,8 +17,15 @@ export interface Ref<T> {
 
 export type UnwrapNestedRefs<T> = T extends Ref<any> ? T : UnwrapRef<T>
 
+/** 转换：是obj就返回reactive，如果不是，就返回val */
 const convert = (val: any): any => (isObject(val) ? reactive(val) : val)
 
+/**
+ * ref(original)
+ * 内部处理的getter setter track了一下
+ */
+// to do
+// effect.track()
 export function ref<T>(raw: T): Ref<T> {
   raw = convert(raw)
   const v = {
@@ -30,10 +42,12 @@ export function ref<T>(raw: T): Ref<T> {
   return v as Ref<T>
 }
 
+/** 通过refSymbol来存储boolean */
 export function isRef(v: any): v is Ref<any> {
   return v ? v[refSymbol] === true : false
 }
 
+/** 转换为refs 也就是搞定get set 和 refSymbol */
 export function toRefs<T extends object>(
   object: T
 ): { [K in keyof T]: Ref<T[K]> } {
@@ -44,6 +58,7 @@ export function toRefs<T extends object>(
   return ret
 }
 
+/** to proxy ref */
 function toProxyRef<T extends object, K extends keyof T>(
   object: T,
   key: K
@@ -60,6 +75,7 @@ function toProxyRef<T extends object, K extends keyof T>(
   return v as Ref<T[K]>
 }
 
+/** 保证的类型 */
 type BailTypes =
   | Function
   | Map<any, any>
