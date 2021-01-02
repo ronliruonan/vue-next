@@ -37,8 +37,9 @@ describe('reactivity/ref', () => {
     expect(dummy).toBe(2)
   })
 
-  // ref() 对嵌套的reactived也好使
-  it('should work like a normal property when nested in a reactive object', () => {
+  // ref()被reactive嵌套时，就是originla的属性一样存在
+  it(`should work like a normal property 
+  when nested in a reactive object`, () => {
     const a = ref(1)
     const obj = reactive({
       a,
