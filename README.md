@@ -1,5 +1,7 @@
 # vue-next [![CircleCI](https://circleci.com/gh/vuejs/vue-next.svg?style=svg&circle-token=fb883a2d0a73df46e80b2e79fd430959d8f2b488)](https://circleci.com/gh/vuejs/vue-next)
 
+## 项目fork于2020年9月底10月初，正式One Piece起航之日
+
 ## Status: Pre-Alpha.
 
 We have achieved most of the architectural goals and new features planned for v3:
